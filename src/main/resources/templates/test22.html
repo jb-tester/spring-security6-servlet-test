@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>test22</title>
+</head>
+<body>
+<p th:text="${test22_attr}"/>
+<a th:href="@{/home}">home</a>
+<form th:action="@{/onExiting}" method="post">
+    <input type="submit" value="Log Out" />
+</form>
+</body>
+</html>

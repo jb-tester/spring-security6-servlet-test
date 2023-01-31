@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+</head>
+<body>
+<p th:text="${home_attr}"/>
+
+<a th:href="@{/onEntering}">login</a>
+<div sec:authorize="isAuthenticated()">
+    <a th:href="@{/foo/test1}">foo/test1</a>
+    <a th:href="@{/foo/test2}">foo/test2</a>
+    <a th:href="@{/foo/test2/test22}">foo/test2/test22</a>
+    <a th:href="@{/bar/test0}">bar/{pv}</a>
+    <a th:href="@{/bar/test1}">bar/test1</a>
+    <a th:href="@{/bar/test1/bar}">bar/test1/{pv}</a>
+    <form th:action="@{/post?req='hello'}" method="post">
+        <input type="submit" value="post" />
+    </form>
+</div>
+</body>
+</html>
