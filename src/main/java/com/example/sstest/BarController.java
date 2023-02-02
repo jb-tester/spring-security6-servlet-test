@@ -24,4 +24,9 @@ public class BarController {
     public String test2(@PathVariable String pv) {
         return "bar test1 + pathvar( " + pv + ")";
     }
+
+    @GetMapping("/test22")
+    public String test2() {
+        return "bar test2";
+    }
 }
