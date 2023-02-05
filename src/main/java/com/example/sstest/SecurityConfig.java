@@ -51,7 +51,7 @@ public class SecurityConfig {
         System.out.println("**********************************");
         System.out.println(admin.getPassword());
         System.out.println("**********************************");
-        return new InMemoryUserDetailsManager(user, admin);
+        return new InMemoryUserDetailsManager(user, admin, guest);
     }
 
     @Bean
@@ -71,7 +71,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN","USER")
                         .requestMatchers(HttpMethod.GET,"/post").denyAll()
                         .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
-                        .requestMatchers("/foo/test1").access(new WebExpressionAuthorizationManager("hasRole('ADMIN') or hasRole('GUEST') or hasRole('USER')"))
+                        .requestMatchers(HttpMethod.GET, "/foo/test1").access(new WebExpressionAuthorizationManager("hasRole('ADMIN') or hasRole('GUEST') or hasRole('USER')"))
                         .requestMatchers("/foo/test2/**").access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasRole("ADMIN"), AuthorityAuthorizationManager.hasRole("USER")))
                         .requestMatchers("/foo/test3/{pathvar}").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(regexMatcher("/bar/test\\d[\\d]*")).hasAnyAuthority("ROLE_GUEST","ROLE_USER")

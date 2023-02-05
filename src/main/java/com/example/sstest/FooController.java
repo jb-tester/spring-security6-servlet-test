@@ -6,13 +6,16 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/foo")
 public class FooController {
 
 
-    @GetMapping("/test1")
+    //@GetMapping("/test1")
+    //@RequestMapping(path="/test1", method = RequestMethod.GET)
+    @RequestMapping(path="/test1")
     public String test1(ModelMap model) {
         model.addAttribute("test1_attr", "test1_attr");
         return "test1";
