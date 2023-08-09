@@ -14,8 +14,8 @@ public class FooController {
 
 
     //@GetMapping("/test1")
-    //@RequestMapping(path="/test1", method = RequestMethod.GET)
-    @RequestMapping(path="/test1")
+    @RequestMapping(path="/test1", method = RequestMethod.GET)
+    //@RequestMapping(path="/test1")
     public String test1(ModelMap model) {
         model.addAttribute("test1_attr", "test1_attr");
         return "test1";

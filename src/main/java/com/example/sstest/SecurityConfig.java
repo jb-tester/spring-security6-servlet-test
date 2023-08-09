@@ -14,6 +14,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -56,6 +58,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        AntPathRequestMatcher antPathRequestMatcher = new AntPathRequestMatcher("/foo/test4/**", "GET");  // extra icon for httpMethod parameter
+        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("/foo/test\\d[\\d]*", "POST"); // no reference
+
         http
                 .formLogin(form -> form
                         .loginPage("/onEntering")
@@ -67,10 +73,12 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                 )
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(antPathRequestMatcher).hasRole("USER")
+                        .requestMatchers(regexRequestMatcher).hasRole("USER")
                         .requestMatchers("/resources/**", "/home", "/").permitAll()
                         .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN","USER")
                         .requestMatchers(HttpMethod.GET,"/post").denyAll()
-                        .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
+                        .requestMatchers(antMatcher("/admin*/**")).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/foo/test1").access(new WebExpressionAuthorizationManager("hasRole('ADMIN') or hasRole('GUEST') or hasRole('USER')"))
                         .requestMatchers("/foo/test2/**").access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasRole("ADMIN"), AuthorityAuthorizationManager.hasRole("USER")))
                         .requestMatchers("/foo/test3/{pathvar}").hasAuthority("ROLE_ADMIN")
@@ -81,10 +89,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // mvcMatcherBuilder test: no urls are inserted
-   /* @Bean
+    // mvcMatcherBuilder test: no urls are inserted - fixed for pattern() method
+   @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector).servletPath("/");
+        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector).servletPath("/");  // no reference here
+        MvcRequestMatcher mvcMatcher = new MvcRequestMatcher(introspector,"/prohibited"); // no reference here
         http
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults())
@@ -92,10 +101,11 @@ public class SecurityConfig {
                         .requestMatchers(mvcMatcherBuilder.pattern("/admin/**")).hasRole("ADMIN")
                         .requestMatchers(mvcMatcherBuilder.pattern("/foo/**")).hasRole("USER")
                         .requestMatchers(mvcMatcherBuilder.pattern("/bar/**")).hasRole("GUEST")
+                        .requestMatchers(mvcMatcher).denyAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
-    }*/
+    }
     /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
