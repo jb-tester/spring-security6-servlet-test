@@ -58,8 +58,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
+        String fragment = "/test2";
         AntPathRequestMatcher antPathRequestMatcher = new AntPathRequestMatcher("/foo/test4/**", "GET");  // extra icon for httpMethod parameter
+        AntPathRequestMatcher antPathRequestMatcher2 = new AntPathRequestMatcher("/foo"+"/test4"+"/**");  // no navigation in case of concatenation
         RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("/foo/test\\d[\\d]*", "POST"); // no reference
 
         http
@@ -80,6 +81,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/post").denyAll()
                         .requestMatchers(antMatcher("/admin*/**")).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/foo/test1").access(new WebExpressionAuthorizationManager("hasRole('ADMIN') or hasRole('GUEST') or hasRole('USER')"))
+                        // extra shields resulted in no correct navigation in case of concatenation:
+                        .requestMatchers("/foo"+"/test2"+"/**").access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasRole("ADMIN"), AuthorityAuthorizationManager.hasRole("USER")))
+                        // extra shields resulted in no correct navigation in case of concatenation with variable:
+                        .requestMatchers("/foo"+fragment+"/**").access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasRole("ADMIN"), AuthorityAuthorizationManager.hasRole("USER")))
+                        // compare: same url w/o concatenation:
                         .requestMatchers("/foo/test2/**").access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasRole("ADMIN"), AuthorityAuthorizationManager.hasRole("USER")))
                         .requestMatchers("/foo/test3/{pathvar}").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(regexMatcher("/bar/test\\d[\\d]*")).hasAnyAuthority("ROLE_GUEST","ROLE_USER")
