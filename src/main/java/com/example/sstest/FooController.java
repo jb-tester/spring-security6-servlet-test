@@ -33,7 +33,7 @@ public class FooController {
         return "test22";
     }
 
-    @RequestMapping("/test3/{pv}")
+    @RequestMapping("/test3/{pv:a\\d\\d\\d}")
     public String test3(ModelMap model, @PathVariable String pv) {
         model.addAttribute("test3_attr1", "test3 "+pv);
         return "test3";
