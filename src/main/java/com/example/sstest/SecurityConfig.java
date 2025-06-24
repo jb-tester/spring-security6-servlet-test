@@ -96,7 +96,7 @@ public class SecurityConfig {
     }
 
     // mvcMatcherBuilder test: no urls are inserted - fixed for pattern() method
-   @Bean
+   /*@Bean
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector).servletPath("/");  // no reference here
         MvcRequestMatcher mvcMatcher = new MvcRequestMatcher(introspector,"/prohibited"); // no reference here
@@ -111,7 +111,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
         return http.build();
-    }
+    }*/
     /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
