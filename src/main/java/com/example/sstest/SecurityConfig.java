@@ -15,6 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.security.web.util.matcher.ELRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
@@ -22,12 +24,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
 
-/**
- * *
- * <p>Created by irina on 1/24/2023.</p>
- * <p>Project: ss-test</p>
- * *
- */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -59,10 +56,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String fragment = "/test2";
-        AntPathRequestMatcher antPathRequestMatcher = new AntPathRequestMatcher("/foo/test4/**", "GET");  // extra icon for httpMethod parameter
+        AntPathRequestMatcher antPathRequestMatcher = new AntPathRequestMatcher("/foo/test4/**", "GET");  // extra icon for httpMethod parameter - fixed
         AntPathRequestMatcher antPathRequestMatcher2 = new AntPathRequestMatcher("/foo"+"/test4"+"/**");  // no navigation in case of concatenation
-        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("/foo/test\\d[\\d]*", "POST"); // no reference
-
+        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("/foo/test\\d[\\d]*", "POST"); // no reference - fixed
         http
                 .formLogin(form -> form
                         .loginPage("/onEntering")
@@ -76,7 +72,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(antPathRequestMatcher).hasRole("USER")
                         .requestMatchers(regexRequestMatcher).hasRole("USER")
-                        .requestMatchers("/resources/**", "/home", "/").permitAll()
+                        // no shields are shown in case of explicit array initializer instead of vararg
+                        .requestMatchers(new String[]{"/resources/**", "/home", "/"}).permitAll()
                         .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN","USER")
                         .requestMatchers(HttpMethod.GET,"/post").denyAll()
                         .requestMatchers(antMatcher("/admin*/**")).hasRole("ADMIN")
