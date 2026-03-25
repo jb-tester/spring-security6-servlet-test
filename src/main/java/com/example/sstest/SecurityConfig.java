@@ -85,6 +85,7 @@ public class SecurityConfig {
                         // compare: same url w/o concatenation:
                         .requestMatchers("/foo/test2/**").access(AuthorizationManagers.allOf(AuthorityAuthorizationManager.hasRole("ADMIN"), AuthorityAuthorizationManager.hasRole("USER")))
                         .requestMatchers("/foo/test3/{pathvar}").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/foo/{*path}/any/**").hasAuthority("ROLE_ADMIN") // not resolved
                         .requestMatchers(regexMatcher("/bar/test\\d[\\d]*")).hasAnyAuthority("ROLE_GUEST","ROLE_USER")
                         .requestMatchers("/bar/test1/*").access(AuthorizationManagers.anyOf(AuthorityAuthorizationManager.hasAuthority("ROLE_USER"), AuthorityAuthorizationManager.hasAuthority("ROLE_ADMIN")))
                         .anyRequest().denyAll()

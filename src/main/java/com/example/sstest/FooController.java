@@ -38,4 +38,10 @@ public class FooController {
         model.addAttribute("test3_attr1", "test3 "+pv);
         return "test3";
     }
+    @GetMapping("/test4/test22/any/test")
+    public String testPath(ModelMap model) {
+
+        model.addAttribute("test4_attr", "test4_attr");
+        return "test4";
+    }
 }
